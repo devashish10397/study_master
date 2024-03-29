@@ -41,6 +41,4 @@ Verify that your AI API credentials are correct
 Contributing
 
 Contributions are welcome! Please open a pull request if you have any suggestions or fixes for the app.
-License
 
-The app is licensed under the M
