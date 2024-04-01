@@ -26,12 +26,12 @@ function VideoSummaryForm() {
             if (url) {
                 // console.log('URL:', url);
                 formData.append('youtubeUrl', url);
-                endpoint = 'http://localhost:5000/api/summarize-url';
+                endpoint = 'http://192.168.1.158:8080/api/summarize-url';
             }
             if (file) {
                 // console.log('File:', file);
                 formData.append('pdfFile', file);
-                endpoint = 'http://localhost:5000/api/summarize-pdf';
+                endpoint = 'http://192.168.1.158:8080/api/summarize-pdf';
             }
             if (!url && !file) {
                 throw new Error('Either URL or file must be provided');
@@ -41,11 +41,14 @@ function VideoSummaryForm() {
                     'Content-Type': 'multipart/form-data'
                 }
             });
-            const { transcript } = response.data;
-            const lines = transcript.split('\n');
-            
-            let tableRows = lines.map((line, index) => <tr key={index}><td>{line}</td></tr>);
-            
+            const { data: { transcript } } = response;
+            const lines = transcript.split('\n').map(line => line.replace(/^\*/, ''));
+            const tableRows = lines.map((line, index) => (
+                <tr key={index}>
+                    <td data-th="Sr num">{index + 1}</td>
+                    <td data-th="Notes">{line}</td>
+                </tr>
+            ));
             setSummary(tableRows);
 
         } catch (error) {
@@ -80,10 +83,9 @@ function VideoSummaryForm() {
             </button>
             {error && <p style={{ color: 'red' }}>{error}</p>}
             {summary && (
-                <div>
+                <div className="">
                     <h3 style={{ color: '#1877F2' }}>Summary:</h3>
-                    {/* <p style={{ color: '#1877F2' }}>{summary}</p> */}
-                    <table style={{ color: '#1877F2' }}>
+                    <table className="rwd-table" style={{ color: '#1877F2' }}>
                         <tbody>
                             {summary}
                         </tbody>
@@ -92,7 +94,6 @@ function VideoSummaryForm() {
             )}
         </div>
     );
-    
 }
 
 export default VideoSummaryForm;
